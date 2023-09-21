@@ -48,7 +48,7 @@ namespace Business.Concrete
                    Baslangic = DateTime.ParseExact("05/23/20 13:00", "MM/dd/yy HH:mm", CultureInfo.InvariantCulture),
                    Bitis = DateTime.ParseExact("05/23/20 13:45", "MM/dd/yy HH:mm", CultureInfo.InvariantCulture),
                    ToplamSure = DateTime.ParseExact("05/23/20 13:45", "MM/dd/yy HH:mm", CultureInfo.InvariantCulture) - DateTime.ParseExact("05/23/20 13:00", "MM/dd/yy HH:mm", CultureInfo.InvariantCulture),
-                   Statu = StatuEnum.Uretim,
+                   Statu = StatuEnum.Durus,
                    DurusNedeni = "Arıza"
                 },
                 new UretimOperasyonBildirimleri()

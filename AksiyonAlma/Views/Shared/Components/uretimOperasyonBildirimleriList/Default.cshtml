@@ -1,0 +1,31 @@
+﻿@using Entity.Concrete
+@model List<UretimOperasyonBildirimleri>
+
+<h4>Üretim Operasyon Bildirimleri</h4>
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Kayıt No</th>
+            <th>Başlangıç</th>
+            <th>Bitiş</th>
+            <th>Topam Süre</th>
+            <th>Statü</th>
+            <th>Duruş Nedeni</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.KayitNo</td>
+                <td>@item.Baslangic.ToString("MM/dd/yy HH:mm")</td>
+                <td>@item.Bitis.ToString("MM/dd/yy HH:mm")</td>
+                <td>@item.ToplamSure.ToString("hh\\:mm")</td>
+                <td>@item.Statu</td>
+                <td>@item.DurusNedeni</td>
+
+            </tr>
+        }
+    </tbody>
+</table>
+
