@@ -27,21 +27,31 @@ namespace AksiyonAlma.Controllers
             List<UretimOperasyonBildirimleri> yeniOperasyonBildirimleri = new List<UretimOperasyonBildirimleri>();
             foreach (var u in uretim)
             {
-
                 var duruslar = mola.Where(d => d.Baslangic.TimeOfDay >= u.Baslangic.TimeOfDay && d.Bitis.TimeOfDay <= u.Bitis.TimeOfDay).ToList();
                 if (duruslar.Count > 0)
                 {
                     DateTime oncekiBitis = u.Baslangic;
 
+                    var uretimBaslangicTarih = u.Baslangic.ToShortDateString();
+                    var uretimBitisTarih = u.Bitis.ToShortDateString();
+
                     foreach (var d in duruslar)
                     {
+                        var molaBaslangicSaat = d.Baslangic.ToLongTimeString();
+                        var molaBitisSaat = d.Bitis.ToLongTimeString();
+
+                        var molaBaslangic = DateTime.Parse(uretimBaslangicTarih + " " + molaBaslangicSaat);
+                        var molaBitis = DateTime.Parse(uretimBaslangicTarih + " " + molaBitisSaat);
+
                         if (oncekiBitis.TimeOfDay == d.Baslangic.TimeOfDay)
                         {
                             yeniOperasyonBildirimleri.Add(new UretimOperasyonBildirimleri
                             {
                                 KayitNo = u.KayitNo,
-                                Baslangic = d.Baslangic,
-                                Bitis = d.Bitis,
+                                //Baslangic = d.Baslangic,
+                                Baslangic = molaBaslangic,
+                                //Bitis = d.Bitis,
+                                Bitis = molaBitis,
                                 ToplamSure = d.Bitis.TimeOfDay - d.Baslangic.TimeOfDay,
                                 Statu = StatuEnum.Durus,
                                 DurusNedeni = d.DurusNedeni
@@ -49,26 +59,26 @@ namespace AksiyonAlma.Controllers
                         }
                         else
                         {
-                        yeniOperasyonBildirimleri.Add(new UretimOperasyonBildirimleri
-                        {
-                            KayitNo = u.KayitNo,
-                            Baslangic = oncekiBitis,
-                            Bitis = d.Baslangic,
-                            ToplamSure = d.Baslangic.TimeOfDay - oncekiBitis.TimeOfDay,
-                            Statu = u.Statu,
-                            DurusNedeni = u.DurusNedeni
-                        });
-                        yeniOperasyonBildirimleri.Add(new UretimOperasyonBildirimleri
-                        {
-                            KayitNo = u.KayitNo,
-                            Baslangic = d.Baslangic,
-                            Bitis = d.Bitis,
-                            ToplamSure = d.Bitis.TimeOfDay - d.Baslangic.TimeOfDay,
-                            Statu = StatuEnum.Durus,
-                            DurusNedeni = d.DurusNedeni
-                        });
+                            yeniOperasyonBildirimleri.Add(new UretimOperasyonBildirimleri
+                            {
+                                KayitNo = u.KayitNo,
+                                Baslangic = oncekiBitis,
+                                Bitis = molaBaslangic,
+                                ToplamSure = d.Baslangic.TimeOfDay - oncekiBitis.TimeOfDay,
+                                Statu = u.Statu,
+                                DurusNedeni = u.DurusNedeni
+                            });
+                            yeniOperasyonBildirimleri.Add(new UretimOperasyonBildirimleri
+                            {
+                                KayitNo = u.KayitNo,
+                                Baslangic = molaBaslangic,
+                                Bitis = molaBitis,
+                                ToplamSure = d.Bitis.TimeOfDay - d.Baslangic.TimeOfDay,
+                                Statu = StatuEnum.Durus,
+                                DurusNedeni = d.DurusNedeni
+                            });
                         }
-                        oncekiBitis = d.Bitis;
+                        oncekiBitis = molaBitis;
                     }
                     if (oncekiBitis.TimeOfDay < u.Bitis.TimeOfDay)
                     {
