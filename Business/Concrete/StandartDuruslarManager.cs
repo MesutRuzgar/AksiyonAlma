@@ -17,22 +17,22 @@ namespace Business.Concrete
             {
                 new StandartDuruslar()
                 {
-                    Baslangic="10:00",                    
-                    Bitis="10:15",
+                    Baslangic=DateTime.ParseExact("10:00", "HH:mm", CultureInfo.InvariantCulture),                    
+                    Bitis=DateTime.ParseExact("10:15", "HH:mm", CultureInfo.InvariantCulture),
                     DurusNedeni="Çay Molası"
 
                 },
                 new StandartDuruslar()
                 {
-                   Baslangic="12:00",
-                    Bitis="12:30",
+                   Baslangic=DateTime.ParseExact("12:00", "HH:mm", CultureInfo.InvariantCulture),
+                    Bitis=DateTime.ParseExact("12:30", "HH:mm", CultureInfo.InvariantCulture),
                     DurusNedeni="Yemek Molası"
 
                 },
                 new StandartDuruslar()
                 {
-                    Baslangic="15:00",
-                    Bitis="15:15",
+                    Baslangic = DateTime.ParseExact("15:00", "HH:mm", CultureInfo.InvariantCulture),
+                    Bitis = DateTime.ParseExact("15:15", "HH:mm", CultureInfo.InvariantCulture),
                     DurusNedeni="Çay Molası"
 
                 }

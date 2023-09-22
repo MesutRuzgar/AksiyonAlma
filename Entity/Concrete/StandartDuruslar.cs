@@ -9,8 +9,8 @@ namespace Entity.Concrete
 {
     public class StandartDuruslar : IEntity
     {
-        public string Baslangic { get; set; }
-        public string Bitis { get; set; }      
+        public DateTime Baslangic { get; set; }
+        public DateTime Bitis { get; set; }      
         public string? DurusNedeni { get; set; }
     }
 }
