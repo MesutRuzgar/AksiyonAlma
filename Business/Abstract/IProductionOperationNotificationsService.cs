@@ -7,8 +7,8 @@ using System.Threading.Tasks;
 
 namespace Business.Abstract
 {
-    public interface IUretimOperasyonBildirimleriService
+    public interface IProductionOperationNotificationsService
     {
-        List<UretimOperasyonBildirimleri> uretimListe();
+        List<ProductionOperationNotifications> ProductionOperationList();
     }
 }

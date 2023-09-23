@@ -3,12 +3,12 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace AksiyonAlma.ViewComponents
 {
-    public class StandartDuruslarList : ViewComponent
+    public class StandardStancesList : ViewComponent
     {
-        StandartDuruslarManager standartDuruslarManager = new StandartDuruslarManager();
+        StandardStancesManager standardStancesManager = new StandardStancesManager();
         public IViewComponentResult Invoke()
         {
-            var values = standartDuruslarManager.duruslarListe();
+            var values = standardStancesManager.StandardStancesList();
             return View(values);
         }
     }

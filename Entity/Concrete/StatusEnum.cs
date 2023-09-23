@@ -6,9 +6,10 @@ using System.Threading.Tasks;
 
 namespace Entity.Concrete
 {
-    public enum StatuEnum
+    public enum StatusEnum
     {
-        Uretim = 1,
-        Durus = 2
+        Production = 1,
+
+        Stance = 2
     }
 }

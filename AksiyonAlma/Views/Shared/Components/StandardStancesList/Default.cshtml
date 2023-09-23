@@ -1,5 +1,5 @@
 ﻿@using Entity.Concrete
-@model List<StandartDuruslar>
+@model List<StandardStances>
 
 <h4>Standart Duruşlar</h4>
 <table class="table table-bordered">
@@ -18,9 +18,9 @@
         {
             <tr>
 
-                <td>@item.Baslangic.ToString("HH:mm")</td>
-                <td>@item.Bitis.ToString("HH:mm")</td>
-                <td>@item.DurusNedeni</td>
+                <td>@item.Start.ToString("HH:mm")</td>
+                <td>@item.Finish.ToString("HH:mm")</td>
+                <td>@item.ReasonForStopping</td>
 
             </tr>
         }

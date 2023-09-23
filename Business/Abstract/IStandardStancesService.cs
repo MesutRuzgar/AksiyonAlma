@@ -7,8 +7,8 @@ using System.Threading.Tasks;
 
 namespace Business.Abstract
 {
-    public interface IStandartDuruslarService
+    public interface IStandardStancesService
     {
-        List<StandartDuruslar> duruslarListe();
+        List<StandardStances> StandardStancesList();
     }
 }

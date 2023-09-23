@@ -5,13 +5,14 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Build.Evaluation;
 using Newtonsoft.Json;
 using System.Diagnostics;
+using System.Text;
 
 namespace AksiyonAlma.Controllers
 {
     public class HomeController : Controller
     {
-        StandartDuruslarManager standartDuruslarManager = new StandartDuruslarManager();
-        UretimOperasyonBildirimleriManager uretimOperasyonBildirimleri = new UretimOperasyonBildirimleriManager();
+        StandardStancesManager standardStancesManager = new StandardStancesManager();
+        ProductionOperationNotificationsManager productionOperationNotificationsManager = new ProductionOperationNotificationsManager();
 
         public IActionResult Index()
         {
@@ -19,84 +20,83 @@ namespace AksiyonAlma.Controllers
             return View();
         }
 
-        public IActionResult AksiyonAl()
+        public IActionResult GetAction()
         {
-            var uretim = uretimOperasyonBildirimleri.uretimListe();
-            var mola = standartDuruslarManager.duruslarListe();
+            var productionOperations = productionOperationNotificationsManager.ProductionOperationList();
+            var standardStances = standardStancesManager.StandardStancesList();
 
-            List<UretimOperasyonBildirimleri> yeniOperasyonBildirimleri = new List<UretimOperasyonBildirimleri>();
+            List<ProductionOperationNotifications> yeniOperasyonBildirimleri = new List<ProductionOperationNotifications>();
 
-            foreach (var u in uretim)
+            foreach (var po in productionOperations)
             {
-                var duruslar = mola.Where(d => d.Baslangic.TimeOfDay >= u.Baslangic.TimeOfDay && d.Bitis.TimeOfDay <= u.Bitis.TimeOfDay).ToList();
-                if (duruslar.Count > 0)
+                var breaks = standardStances.Where(x => x.Start.TimeOfDay >= po.Start.TimeOfDay && x.Finish.TimeOfDay <= po.Finish.TimeOfDay).ToList();
+
+                if (breaks.Count > 0)
                 {
-                    DateTime oncekiBitis = u.Baslangic;
+                    DateTime previousEnding = po.Start;
 
-                    var uretimBaslangicTarih = u.Baslangic.ToShortDateString();
-                    var uretimBitisTarih = u.Bitis.ToShortDateString();
+                    var poStartDate = po.Start.ToShortDateString();
+                    var poFinishDate = po.Finish.ToShortDateString();
 
-                    foreach (var d in duruslar)
+                    foreach (var b in breaks)
                     {
-                        var molaBaslangicSaat = d.Baslangic.ToShortTimeString();
-                        var molaBitisSaat = d.Bitis.ToShortTimeString();
+                        var breakStartTime = b.Start.ToShortTimeString();
+                        var breakFinishTime = b.Finish.ToShortTimeString();
 
-                        var molaBaslangic = DateTime.Parse(uretimBaslangicTarih + " " + molaBaslangicSaat);
-                        var molaBitis = DateTime.Parse(uretimBaslangicTarih + " " + molaBitisSaat);
+                        var breakStart = DateTime.Parse(poStartDate + " " + breakStartTime);
+                        var breakFinish = DateTime.Parse(poStartDate + " " + breakFinishTime);
 
-                        if (oncekiBitis.TimeOfDay == d.Baslangic.TimeOfDay)
+                        if (previousEnding.TimeOfDay == b.Start.TimeOfDay)
                         {
-                            yeniOperasyonBildirimleri.Add(new UretimOperasyonBildirimleri
+                            yeniOperasyonBildirimleri.Add(new ProductionOperationNotifications
                             {
-                                KayitNo = u.KayitNo,
-                                //Baslangic = d.Baslangic,
-                                Baslangic = molaBaslangic,
-                                //Bitis = d.Bitis,
-                                Bitis = molaBitis,
-                                ToplamSure = d.Bitis.TimeOfDay - d.Baslangic.TimeOfDay,
-                                Statu = StatuEnum.Durus,
-                                DurusNedeni = d.DurusNedeni
+                                ID = po.ID,
+                                Start = breakStart,
+                                Finish = breakFinish,
+                                TotalTime = b.Finish.TimeOfDay - b.Start.TimeOfDay,
+                                Status = StatusEnum.Stance,
+                                ReasonForStopping = b.ReasonForStopping
                             });
                         }
                         else
                         {
-                            yeniOperasyonBildirimleri.Add(new UretimOperasyonBildirimleri
+                            yeniOperasyonBildirimleri.Add(new ProductionOperationNotifications
                             {
-                                KayitNo = u.KayitNo,
-                                Baslangic = oncekiBitis,
-                                Bitis = molaBaslangic,
-                                ToplamSure = d.Baslangic.TimeOfDay - oncekiBitis.TimeOfDay,
-                                Statu = u.Statu,
-                                DurusNedeni = u.DurusNedeni
+                                ID = po.ID,
+                                Start = previousEnding,
+                                Finish = breakStart,
+                                TotalTime = b.Start.TimeOfDay - previousEnding.TimeOfDay,
+                                Status = po.Status,
+                                ReasonForStopping = po.ReasonForStopping
                             });
-                            yeniOperasyonBildirimleri.Add(new UretimOperasyonBildirimleri
+                            yeniOperasyonBildirimleri.Add(new ProductionOperationNotifications
                             {
-                                KayitNo = u.KayitNo,
-                                Baslangic = molaBaslangic,
-                                Bitis = molaBitis,
-                                ToplamSure = d.Bitis.TimeOfDay - d.Baslangic.TimeOfDay,
-                                Statu = StatuEnum.Durus,
-                                DurusNedeni = d.DurusNedeni
+                                ID = po.ID,
+                                Start = breakStart,
+                                Finish = breakFinish,
+                                TotalTime = b.Finish.TimeOfDay - b.Start.TimeOfDay,
+                                Status = StatusEnum.Stance,
+                                ReasonForStopping = b.ReasonForStopping
                             });
                         }
-                        oncekiBitis = molaBitis;
+                        previousEnding = breakFinish;
                     }
-                    if (oncekiBitis.TimeOfDay < u.Bitis.TimeOfDay)
+                    if (previousEnding.TimeOfDay < po.Finish.TimeOfDay)
                     {
-                        yeniOperasyonBildirimleri.Add(new UretimOperasyonBildirimleri
+                        yeniOperasyonBildirimleri.Add(new ProductionOperationNotifications
                         {
-                            KayitNo = u.KayitNo,
-                            Baslangic = oncekiBitis,
-                            Bitis = u.Bitis,
-                            ToplamSure = u.Bitis.TimeOfDay - oncekiBitis.TimeOfDay,
-                            Statu = u.Statu,
-                            DurusNedeni = u.DurusNedeni
+                            ID = po.ID,
+                            Start = previousEnding,
+                            Finish = po.Finish,
+                            TotalTime = po.Finish.TimeOfDay - previousEnding.TimeOfDay,
+                            Status = po.Status,
+                            ReasonForStopping = po.ReasonForStopping
                         });
                     }
                 }
                 else
                 {
-                    yeniOperasyonBildirimleri.Add(u);
+                    yeniOperasyonBildirimleri.Add(po);
                 }
             }
             var values = JsonConvert.SerializeObject(yeniOperasyonBildirimleri);
