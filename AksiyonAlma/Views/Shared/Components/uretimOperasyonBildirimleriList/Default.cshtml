@@ -18,8 +18,8 @@
         {
             <tr>
                 <td>@item.KayitNo</td>
-                <td>@item.Baslangic.ToString("MM/dd/yy HH:mm")</td>
-                <td>@item.Bitis.ToString("MM/dd/yy HH:mm")</td>
+                <td>@item.Baslangic.ToString("MM/dd/yy HH:mm").Replace('.', '/')</td>
+                <td>@item.Bitis.ToString("MM/dd/yy HH:mm").Replace('.', '/')</td>
                 <td>@item.ToplamSure.ToString("hh\\:mm")</td>
                 <td>@item.Statu</td>
                 <td>@item.DurusNedeni</td>

@@ -19,7 +19,12 @@
 <div class="p2-" id="aksiyonal">
 </div>
 
-<script src="~/lib/jquery/dist/jquery.js"></script>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+
+
 <script>
     $("#deneme").click(function () {
         $.ajax({
@@ -30,21 +35,30 @@
 
             //eger basarili olursa bana bir fonksiyon dön ismi funk olsun dedik
             success: function (funk) {
-            
-                let values = jQuery.parseJSON(funk);
-                  console.log(values);
+
+                let values = jQuery.parseJSON(funk);           
 
                 let htmlst = "<table class=table table-bordered> <tr><th> Kayıt No </th> <th> Başlangıç </th> <th> Bitiş </th> <th> Toplam Süre (Saat) </th> <th> Statü </th> <th> Duruş Nedeni </th></tr>";
-             
-                $.each(values, (index, value) => {
-                    htmlst += `<tr><td>${value.KayitNo}</td> <td>${value.Baslangic}</td> <td>${value.Bitis}</td> <td>${value.ToplamSure}</td> <td>${value.Statu === 1 ? 'URETIM' : 'DURUS'} </td > <td> ${value.DurusNedeni} </td>  </tr > `
-                });
 
-                htmlst += "</table>";
+                $.each(values, (index, value) => {
+
+                    //tarih ve saat formatlari icin oment.js kutuphanesini kullandik
+
+                    var baslangic = moment(value.Baslangic);
+                    var bitis = moment(value.Bitis);
+                    var toplamSure =moment.duration(value.ToplamSure);
+
+                    var baslangicFormat = baslangic.format('MM/DD/YY HH:mm');
+                    var bitisFormat = bitis.format('MM/DD/YY HH:mm');
+                    var toplamSureFormat = moment.utc(toplamSure.asMilliseconds()).format('HH:mm');
+
+                    htmlst += `<tr><td>${value.KayitNo}</td> <td>${baslangicFormat}</td> <td>${bitisFormat}</td> <td>${toplamSureFormat}</td> <td>${value.Statu === 1 ? 'URETIM' : 'DURUS'} </td > <td> ${value.DurusNedeni} </td>  </tr > `;
+                });
+             
 
                 //verileri tabloya yansitacaz
 
-                $("#aksiyonal").html(htmlst);      
+                $("#aksiyonal").html(htmlst);
 
             }
         });

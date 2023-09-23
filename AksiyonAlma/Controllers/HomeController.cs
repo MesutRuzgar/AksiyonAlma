@@ -25,6 +25,7 @@ namespace AksiyonAlma.Controllers
             var mola = standartDuruslarManager.duruslarListe();
 
             List<UretimOperasyonBildirimleri> yeniOperasyonBildirimleri = new List<UretimOperasyonBildirimleri>();
+
             foreach (var u in uretim)
             {
                 var duruslar = mola.Where(d => d.Baslangic.TimeOfDay >= u.Baslangic.TimeOfDay && d.Bitis.TimeOfDay <= u.Bitis.TimeOfDay).ToList();
@@ -37,8 +38,8 @@ namespace AksiyonAlma.Controllers
 
                     foreach (var d in duruslar)
                     {
-                        var molaBaslangicSaat = d.Baslangic.ToLongTimeString();
-                        var molaBitisSaat = d.Bitis.ToLongTimeString();
+                        var molaBaslangicSaat = d.Baslangic.ToShortTimeString();
+                        var molaBitisSaat = d.Bitis.ToShortTimeString();
 
                         var molaBaslangic = DateTime.Parse(uretimBaslangicTarih + " " + molaBaslangicSaat);
                         var molaBitis = DateTime.Parse(uretimBaslangicTarih + " " + molaBitisSaat);
